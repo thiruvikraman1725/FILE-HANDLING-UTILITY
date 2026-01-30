@@ -1,0 +1,169 @@
+/*
+ * FileHandlingUtility.java
+ * -----------------------------------------
+ * A Java program that demonstrates basic file operations:
+ * 1. Create a file
+ * 2. Write to a file
+ * 3. Read from a file
+ * 4. Modify file content
+ * 5. Append data to file
+ * 6. Delete file
+ *
+ * Author: Your Name
+ * Date: YYYY-MM-DD
+ */
+
+import java.io.*;
+import java.util.*;
+
+public class FileHandlingUtility {
+
+    private static final String FILE_NAME = "sample.txt";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\n===== FILE HANDLING UTILITY =====");
+            System.out.println("1. Create File");
+            System.out.println("2. Write to File");
+            System.out.println("3. Read File");
+            System.out.println("4. Modify File");
+            System.out.println("5. Append to File");
+            System.out.println("6. Delete File");
+            System.out.println("7. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    createFile();
+                    break;
+                case 2:
+                    writeFile(scanner);
+                    break;
+                case 3:
+                    readFile();
+                    break;
+                case 4:
+                    modifyFile(scanner);
+                    break;
+                case 5:
+                    appendFile(scanner);
+                    break;
+                case 6:
+                    deleteFile();
+                    break;
+                case 7:
+                    System.out.println("Exiting program...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+
+        } while (choice != 7);
+
+        scanner.close();
+    }
+
+    // 1. Create File
+    public static void createFile() {
+        try {
+            File file = new File(FILE_NAME);
+            if (file.createNewFile()) {
+                System.out.println("File created successfully.");
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating file.");
+            e.printStackTrace();
+        }
+    }
+
+    // 2. Write to File (Overwrite)
+    public static void writeFile(Scanner scanner) {
+        try (FileWriter writer = new FileWriter(FILE_NAME)) {
+            System.out.print("Enter text to write: ");
+            String content = scanner.nextLine();
+            writer.write(content);
+            System.out.println("Data written successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file.");
+            e.printStackTrace();
+        }
+    }
+
+    // 3. Read File
+    public static void readFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            System.out.println("\n--- File Content ---");
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            System.out.println("--------------------");
+        } catch (IOException e) {
+            System.out.println("Error reading file.");
+            e.printStackTrace();
+        }
+    }
+
+    // 4. Modify File (Replace specific word)
+    public static void modifyFile(Scanner scanner) {
+        try {
+            File file = new File(FILE_NAME);
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+            reader.close();
+
+            System.out.print("Enter word to replace: ");
+            String oldWord = scanner.nextLine();
+            System.out.print("Enter new word: ");
+            String newWord = scanner.nextLine();
+
+            String updatedContent = content.toString().replace(oldWord, newWord);
+
+            FileWriter writer = new FileWriter(file);
+            writer.write(updatedContent);
+            writer.close();
+
+            System.out.println("File modified successfully.");
+
+        } catch (IOException e) {
+            System.out.println("Error modifying file.");
+            e.printStackTrace();
+        }
+    }
+
+    // 5. Append to File
+    public static void appendFile(Scanner scanner) {
+        try (FileWriter writer = new FileWriter(FILE_NAME, true)) {
+            System.out.print("Enter text to append: ");
+            String content = scanner.nextLine();
+            writer.write("\n" + content);
+            System.out.println("Data appended successfully.");
+        } catch (IOException e) {
+            System.out.println("Error appending to file.");
+            e.printStackTrace();
+        }
+    }
+
+    // 6. Delete File
+    public static void deleteFile() {
+        File file = new File(FILE_NAME);
+        if (file.delete()) {
+            System.out.println("File deleted successfully.");
+        } else {
+            System.out.println("Failed to delete file.");
+        }
+    }
+}
